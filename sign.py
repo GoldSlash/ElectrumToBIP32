@@ -7,7 +7,7 @@ from mnemonic import mn_decode as mnemonic_to_root_key
 from pybitcointools.deterministic import electrum_privkey as electrum_private_key
 from pybitcointools.transaction import sign
 
-# Read unsigned transactions and key indexes from disk
+# Read unsigned transactions and chain/indexes from disk
 with open('data/unsigned.dat', 'r') as f:
     unsigned_transactions = f.readlines()
 

@@ -17,17 +17,17 @@ MAX_TX_VALUE = 500000000        # 5 BTC
 discovered = []
 electrum_mpk = raw_input('\nEnter MPK for Electrum wallet: ')
 value_discovered = 0
-for chain in range(2):
+for chain in (0, 1):
     gap = 0
     key_index = 0
     print "\nDiscovery for Electrum {0} chain:".format('receiving' if chain == 0 else 'change')
     while gap < ELECTRUM_GAP_LIMIT:
         address = electrum_address(electrum_mpk, key_index, chain)
         print "Checking %s for history..." % address,
-        if len(history(address)) > 0:
+        if history(address):
             gap = 0
             unspent_outputs = unspent(address)
-            if len(unspent_outputs) > 0:
+            if unspent_outputs:
                 value = sum([unspent_output['value'] for unspent_output in unspent_outputs])
                 value_btc = float(value) / SATOSHI_PER_BITCOIN
                 print "{0} BTC found".format(value_btc)
@@ -49,12 +49,13 @@ destinations = []
 bip32_mpk = raw_input('Enter MPK for BIP32 wallet: ')
 print "\nDiscovery for BIP32 chain:"
 key_index = 0
-while len(destinations) < len(discovered) * 2:
+destinations_needed = len(discovered) * 2
+while len(destinations) < destinations_needed:
     extended_public_key = bip32_ckd(bip32_mpk, key_index)
     public_key = bip32_extract_key(extended_public_key)
     address = pubkey_to_address(public_key)
     print "Checking %s for history..." % address,
-    if len(history(address)) == 0:
+    if not history(address):
         print "no history"
         destinations.append(address)
     else:
@@ -87,7 +88,7 @@ for d in discovered:
     print "\t{0} : {1}".format(tx_destination_1, tx_value_1)
     print "\t{0} : {1}".format(tx_destination_2, tx_value_2)
 
-# Write unsigned transactions and key indexes to disk
+# Write unsigned transactions and chain/indexes to disk
 with open('data/unsigned.dat', 'w') as f:
     for chain, key_index, transaction in transactions:
         f.write(str(chain)+':'+str(key_index)+':'+transaction+'\n')
