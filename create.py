@@ -33,7 +33,7 @@ for chain in (0, 1):
             if unspent_outputs:
                 value = sum([unspent_output['value'] for unspent_output in unspent_outputs])
                 value_btc = float(value) / SATOSHI_PER_BITCOIN
-                print "{0} BTC found".format(value_btc)
+                print "{0:,f} BTC found".format(value_btc)
                 d = {"chain": chain, "key_index": key_index, "address": address,
                      "unspent_outputs": unspent_outputs, "value": value}
                 discovered.append(d)
@@ -45,7 +45,7 @@ for chain in (0, 1):
             gap += 1
         key_index += 1
 value_discovered_btc = float(value_discovered) / SATOSHI_PER_BITCOIN
-print "Discovered {0} BTC in {1} addresses.\n".format(value_discovered_btc, len(discovered))
+print "Discovered {0:,f} BTC in {1} addresses.\n".format(value_discovered_btc, len(discovered))
 
 # Discover unused destination addresses
 destinations = []

@@ -32,9 +32,9 @@ for tx in transactions:
         value = output['value']
         value_total += value
         value_btc = float(value)/SATOSHI_PER_BITCOIN
-        print "\tto {0}:  {1} BTC".format(destination, value_btc)
+        print "\tto {0}:  {1:,f} BTC".format(destination, value_btc)
 value_total_btc = float(value_total) / SATOSHI_PER_BITCOIN
-print "Total Value:  {0} BTC (excluding network fees)".format(value_total_btc)
+print "Total Value:  {0:,f} BTC (excluding network fees)".format(value_total_btc)
 print "\nReview transactions before continuing."
 
 # Convert Electrum wallet seed into root key
