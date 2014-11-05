@@ -12,6 +12,9 @@ SATOSHI_PER_BITCOIN = 100000000
 STANDARD_TX_FEE = 10000         # 0.0001 BTC
 MIN_TX_VALUE = 10000            # 0.0001 BTC
 MAX_TX_VALUE = 500000000        # 5 BTC
+UNSIGNED_FILE = 'data/unsigned.dat'
+
+print "ElectrumToBIP32 create.py (ONLINE)"
 
 # Discover unspent outputs
 discovered = []
@@ -78,19 +81,12 @@ for d in discovered:
 
     tx_inputs = d['unspent_outputs']
     tx_outputs = [tx_destination_1 + ':' + str(tx_value_1), tx_destination_2 + ':' + str(tx_value_2)]
-    transaction = mktx(tx_inputs, tx_outputs)
-    transactions.append((d['chain'], d['key_index'], transaction))
-
-    print "\nTransaction for {0} (chain: {1}  index: {2})".format(d['address'], d['chain'], d['key_index'])
-    print "Inputs:"
-    print "\t{0}".format(d['unspent_outputs'])
-    print "Outputs:"
-    print "\t{0} : {1}".format(tx_destination_1, tx_value_1)
-    print "\t{0} : {1}".format(tx_destination_2, tx_value_2)
+    raw_transaction = mktx(tx_inputs, tx_outputs)
+    transactions.append((d['chain'], d['key_index'], raw_transaction))
 
 # Write unsigned transactions and chain/indexes to disk
-with open('data/unsigned.dat', 'w') as f:
-    for chain, key_index, transaction in transactions:
-        f.write(str(chain)+':'+str(key_index)+':'+transaction+'\n')
+with open(UNSIGNED_FILE, 'w') as f:
+    for chain, key_index, raw_transaction in transactions:
+        f.write(str(chain)+':'+str(key_index)+':'+raw_transaction+'\n')
 
-print('\nWrote {0} unsigned transactions and key indexes to file: unsigned.dat'.format(len(transactions)))
+print('\nWrote {0} unsigned transactions to file: {1}'.format(len(transactions), UNSIGNED_FILE))
