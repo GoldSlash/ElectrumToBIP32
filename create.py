@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import random
+import os
 
 # https://github.com/vbuterin/pybitcointools
 from pybitcointools.deterministic import electrum_address, bip32_ckd, bip32_extract_key, pubkey_to_address
@@ -85,6 +86,8 @@ for d in discovered:
     transactions.append((d['chain'], d['key_index'], raw_transaction))
 
 # Write unsigned transactions and chain/indexes to disk
+if not os.path.exists('data'):
+    os.mkdir('data')
 with open(UNSIGNED_FILE, 'w') as f:
     for chain, key_index, raw_transaction in transactions:
         f.write(str(chain)+':'+str(key_index)+':'+raw_transaction+'\n')
